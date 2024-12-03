@@ -1,31 +1,34 @@
 import React from 'react';
 import { createRoot } from 'react-dom/client';
 import App from './App';
-import { init, miniApp, mainButton, mockTelegramEnv, parseInitData, shareURL, backButton } from '@telegram-apps/sdk';
+import { init, miniApp, mainButton, mockTelegramEnv, parseInitData, shareURL, miniAppBottomBarColor} from '@telegram-apps/sdk';
 
 const initializeTelegramSDK = async () => {
   try {
         // Попытка инициализировать настоящее окружение Telegram
     console.log("Инициализация окружения Telegram");
     init();
-    if (backButton.mount.isAvailable()) {
-      backButton.mount();
-      backButton.show();
-      backButton.isMounted(); // true
-    }
+    // if (backButton.mount.isAvailable()) {
+    //   backButton.mount();
+    //   backButton.show();
+    //   backButton.isMounted(); // true
+    // }
     if (miniApp.mount.isAvailable()) {
       miniApp.mount();
       miniApp.isMounted(); // true
     }
-    miniApp.setHeaderColor('#fcb69f');
+    miniApp.setHeaderColor('#f4eae1');
+    miniApp.bottomBarColor('#f4eae1');
+    miniAppBottomBarColor('#f4eae1');
     // Инициализация главной кнопки
     if (mainButton.mount.isAvailable()) {
       mainButton.mount();
       mainButton.isMounted(); // true
     }
     mainButton.setParams({
-      backgroundColor: '#aa1388',
+      backgroundColor: '#f6f6f6',
       text: 'Поделиться очками',
+      textColor: '#282828',
       isVisible: true,
       isEnabled: true,
     });
