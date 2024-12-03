@@ -1,35 +1,49 @@
 import React from 'react';
 import { createRoot } from 'react-dom/client';
 import App from './App';
-import { init, mockTelegramEnv, parseInitData } from '@telegram-apps/sdk';
+import { init, miniApp, mainButton, mockTelegramEnv, parseInitData, shareURL, backButton } from '@telegram-apps/sdk';
 
 const initializeTelegramSDK = async () => {
   try {
-    // Попытка инициализировать настоящее окружение Telegram
+        // Попытка инициализировать настоящее окружение Telegram
     console.log("Инициализация окружения Telegram");
-    const telegram = await init(); // init() возвращает объект Telegram
-
-    telegram.setHeaderColor('#fcb69f');
-    telegram.MainButton.setParams({
+    init();
+    if (backButton.mount.isAvailable()) {
+      backButton.mount();
+      backButton.show();
+      backButton.isMounted(); // true
+    }
+    if (miniApp.mount.isAvailable()) {
+      miniApp.mount();
+      miniApp.isMounted(); // true
+    }
+    miniApp.setHeaderColor('#fcb69f');
+    // Инициализация главной кнопки
+    if (mainButton.mount.isAvailable()) {
+      mainButton.mount();
+      mainButton.isMounted(); // true
+    }
+    mainButton.setParams({
       backgroundColor: '#aa1388',
       text: 'Поделиться очками',
       isVisible: true,
       isEnabled: true,
     });
-    telegram.MainButton.show();
+    mainButton.show();
 
     // Установка обработчика нажатия на главную кнопку
-    telegram.MainButton.onClick(() => { // Используем onClick вместо on('click', ...)
+    mainButton.on('click', () => {
       try {
         // Получение текущих очков из localStorage
         const score = localStorage.getItem('memory-game-score') || 0;
-        telegram.shareURL(`Посмотрите! У меня ${score} очков в игре!`); // Используем telegram.shareURL
+        shareURL(`Посмотрите! У меня ${score} очков в игре!`);
         console.log('Окно выбора чата открыто для отправки сообщения.');
       } catch (error) {
         console.error('Ошибка при открытии окна выбора чата:', error);
       }
     });
-    console.log("Реальное окружение Telegram инициализировано");
+
+    await miniApp.ready();
   } catch (error) {
     // В случае ошибки инициализируем фейковое окружение
     console.error('Ошибка при инициализации Telegram:', error);
