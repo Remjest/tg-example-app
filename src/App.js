@@ -2,12 +2,12 @@ import React, { useReducer, useEffect } from 'react';
 import './App.css';
 
 const generateDeck = () => {
-  const colors = ['#FF6347', '#4682B4', '#32CD32', '#FFD700', '#FF69B4', '#8A2BE2'];
+  const images = ['1.jpg', '2.jpg', '3.jpg', '4.jpg', '5.jpg', '6.jpg'];
   const deck = [];
-  // Каждому цвету добавляем две карточки
-  for (let color of colors) {
-    deck.push({ color, matched: false });
-    deck.push({ color, matched: false });
+  // Каждой картинке добавляем две карточки
+  for (let image of images) {
+    deck.push({ image, matched: false });
+    deck.push({ image, matched: false });
   }
   // Перемешиваем колоду
   return deck.sort(() => Math.random() - 0.5);
@@ -39,8 +39,8 @@ const gameReducer = (state, action) => {
     case 'CHECK_MATCH':
       // Проверяем совпадение перевернутых карточек
       const [first, second] = state.flipped;
-      if (state.deck[first].color === state.deck[second].color) {
-        const newMatched = [...state.matched, state.deck[first].color];
+      if (state.deck[first].image === state.deck[second].image) {
+        const newMatched = [...state.matched, state.deck[first].image];
         const isGameOver = newMatched.length === state.deck.length / 2;
         const newScore = isGameOver ? state.score + 1 : state.score;
 
@@ -145,17 +145,28 @@ const App = () => {
         <p>Попытки: {state.turns}/15</p>
       </div>
       <div className="deck">
-        {state.deck.map((card, index) => (
-          <div
-            key={index}
-            className={`card ${
-              state.flipped.includes(index) || state.matched.includes(card.color) ? 'flipped show' : ''
-            }`}
-            style={{ '--card-color': card.color }}
-            onClick={() => handleCardClick(index)}
-          />
-        ))}
+  {state.deck.map((card, index) => (
+    <div
+      key={index}
+      className={`card ${
+        state.flipped.includes(index) || state.matched.includes(card.image) ? 'flipped show' : ''
+      }`}
+      onClick={() => handleCardClick(index)}
+    >
+      <div className="card-inner">
+        <div className="card-front"></div>
+        <div 
+          className="card-back"
+          style={{ 
+            backgroundImage: `url(${process.env.PUBLIC_URL}/images/${card.image})`,
+            backgroundSize: 'cover',
+            backgroundPosition: 'center'
+          }}
+        ></div>
       </div>
+    </div>
+  ))}
+</div>
       {state.gameOver && (
         <>
           <div className="overlay" />
