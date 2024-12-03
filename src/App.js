@@ -18,7 +18,7 @@ const initialState = {
   flipped: [],
   matched: [],
   turns: 0,
-  score: 0,
+  score: parseInt(localStorage.getItem('memory-game-score'), 10) || 0, // Инициализация из localStorage
   pendingReset: false,
   gameOver: false,
 };
@@ -27,20 +27,32 @@ const gameReducer = (state, action) => {
   switch (action.type) {
     case 'FLIP_CARD':
       // Переворачиваем карточку
-      if (state.flipped.length < 2 && !state.flipped.includes(action.index) && !state.matched.includes(state.deck[action.index].color)) {
+      if (
+        state.flipped.length < 2 &&
+        !state.flipped.includes(action.index) &&
+        !state.matched.includes(state.deck[action.index].color)
+      ) {
         return { ...state, flipped: [...state.flipped, action.index] };
       }
       return state;
+
     case 'CHECK_MATCH':
       // Проверяем совпадение перевернутых карточек
       const [first, second] = state.flipped;
       if (state.deck[first].color === state.deck[second].color) {
         const newMatched = [...state.matched, state.deck[first].color];
         const isGameOver = newMatched.length === state.deck.length / 2;
+        const newScore = isGameOver ? state.score + 1 : state.score;
+
+        // Сохраняем новый score в localStorage, если игра завершена
+        if (isGameOver) {
+          localStorage.setItem('memory-game-score', newScore);
+        }
+
         return {
           ...state,
           matched: newMatched,
-          score: isGameOver ? state.score + 1 : state.score,
+          score: newScore,
           flipped: [],
           pendingReset: false,
           gameOver: isGameOver,
@@ -48,18 +60,36 @@ const gameReducer = (state, action) => {
       } else {
         return { ...state, pendingReset: true };
       }
+
     case 'RESET_FLIPPED':
       // Сбрасываем перевернутые карточки
       return { ...state, flipped: [], pendingReset: false };
+
     case 'INCREMENT_TURN':
       // Увеличиваем счетчик попыток
       return { ...state, turns: state.turns + 1 };
+
     case 'RESET_GAME':
-      // Сбрасываем состояние игры
+      // Сбрасываем состояние игры без сброса score
       return {
-        ...initialState,
+        ...state,
         deck: generateDeck(),
+        flipped: [],
+        matched: [],
+        turns: 0,
+        pendingReset: false,
+        gameOver: false,
+        // Сохраняем текущий score без изменений
+        score: state.score,
       };
+
+    case 'RESET_SCORE':
+      // Сбрасываем очки
+      return {
+        ...state,
+        score: 0,
+      };
+
     default:
       return state;
   }
@@ -67,6 +97,11 @@ const gameReducer = (state, action) => {
 
 const App = () => {
   const [state, dispatch] = useReducer(gameReducer, initialState);
+
+  // Сохранение score в localStorage при его изменении
+  useEffect(() => {
+    localStorage.setItem('memory-game-score', state.score);
+  }, [state.score]);
 
   // Проверка на совпадение перевернутых карточек
   useEffect(() => {
@@ -97,6 +132,11 @@ const App = () => {
     dispatch({ type: 'RESET_GAME' });
   };
 
+  const handleResetScore = () => {
+    localStorage.setItem('memory-game-score', 0);
+    dispatch({ type: 'RESET_SCORE' });
+  };
+
   return (
     <div className="App">
       <h1>Memory Game</h1>
@@ -108,7 +148,9 @@ const App = () => {
         {state.deck.map((card, index) => (
           <div
             key={index}
-            className={`card ${state.flipped.includes(index) || state.matched.includes(card.color) ? 'flipped show' : ''}`}
+            className={`card ${
+              state.flipped.includes(index) || state.matched.includes(card.color) ? 'flipped show' : ''
+            }`}
             style={{ '--card-color': card.color }}
             onClick={() => handleCardClick(index)}
           />
@@ -132,6 +174,9 @@ const App = () => {
           </div>
         </>
       )}
+      <button onClick={handleResetScore} className="reset-score">
+        Сбросить очки
+      </button>
     </div>
   );
 };

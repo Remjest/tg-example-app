@@ -36,7 +36,24 @@ const initializeTelegramSDK = async () => {
       try {
         // Получение текущих очков из localStorage
         const score = localStorage.getItem('memory-game-score') || 0;
-        shareURL(`Посмотрите! У меня ${score} очков в игре!`);
+
+        // Сформируйте ссылку на вашего бота
+        const botUrl = 'https://t.me/tgAppExampleBot'; // Замените на свой username бота
+
+        // Сформируйте сообщение
+        const messageText = `Посмотрите! У меня ${score} очков в игре!`;
+
+        // Кодируйте параметры
+        const encodedText = encodeURIComponent(messageText);
+        const encodedUrl = encodeURIComponent(botUrl);
+
+        // Сформируйте полный URL для поделиться
+        const shareLink = `https://t.me/share/url?url=${encodedUrl}&text=${encodedText}`;
+
+        // Используйте метод shareURL для отправки ссылки
+        // mainButton.shareURL(shareLink);
+        shareURL(shareLink);
+
         console.log('Окно выбора чата открыто для отправки сообщения.');
       } catch (error) {
         console.error('Ошибка при открытии окна выбора чата:', error);
