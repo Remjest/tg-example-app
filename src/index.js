@@ -29,36 +29,27 @@ const initializeTelegramSDK = async () => {
       isVisible: true,
       isEnabled: true,
     });
-    // mainButton.show();
-
-    // Установка обработчика нажатия на главную кнопку
-    mainButton.on('click', () => {
-      try {
-        // Получение текущих очков из localStorage
-        const score = localStorage.getItem('memory-game-score') || 0;
-
-        // Сформируйте ссылку на вашего бота
-        const botUrl = 'https://t.me/tgAppExampleBot'; // Замените на свой username бота
-
-        // Сформируйте сообщение
-        const messageText = `Посмотрите! У меня ${score} очков в игре!`;
-
-        // Кодируйте параметры
-        const encodedText = encodeURIComponent(messageText);
-        const encodedUrl = encodeURIComponent(botUrl);
-
-        // Сформируйте полный URL для поделиться
-        const shareLink = `https://t.me/share/url?url=${encodedUrl}&text=${encodedText}`;
-
-        // Используйте метод shareURL для отправки ссылки
-        // mainButton.shareURL(shareLink);
-        shareURL(shareLink);
-
-        console.log('Окно выбора чата открыто для отправки сообщения.');
-      } catch (error) {
-        console.error('Ошибка при открытии окна выбора чата:', error);
+   
+    if (mainButton.onClick.isAvailable()) {
+      function handleClick() {
+        try {
+          // Ваш код для обработки клика
+          const score = localStorage.getItem('memory-game-score') || 0;
+          const botUrl = 'https://t.me/tgAppExampleBot';
+          const messageText = `Посмотрите! У меня ${score} очков в игре!`;
+          const encodedText = encodeURIComponent(messageText);
+          const encodedUrl = encodeURIComponent(botUrl);
+          const shareLink = `https://t.me/share/url?url=${encodedUrl}&text=${encodedText}`;
+          shareURL(shareLink);
+          console.log('Окно выбора чата открыто для отправки сообщения.');
+        } catch (error) {
+          console.error('Ошибка при открытии окна выбора чата:', error);
+        }
       }
-    });
+
+      // Установка обработчика
+      mainButton.onClick(handleClick);
+    }
 
     await miniApp.ready();
   } catch (error) {
