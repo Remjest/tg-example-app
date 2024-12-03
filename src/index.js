@@ -29,7 +29,7 @@ const initializeTelegramSDK = async () => {
       isVisible: true,
       isEnabled: true,
     });
-    mainButton.show();
+    // mainButton.show();
 
     // Установка обработчика нажатия на главную кнопку
     mainButton.on('click', () => {
