@@ -1,7 +1,7 @@
 import React from 'react';
 import { createRoot } from 'react-dom/client';
 import App from './App';
-import { init, miniApp, mainButton, mockTelegramEnv, parseInitData, shareURL, miniAppBottomBarColor} from '@telegram-apps/sdk';
+import { init, miniApp, mainButton, mockTelegramEnv, parseInitData, shareURL} from '@telegram-apps/sdk';
 
 const initializeTelegramSDK = async () => {
   try {
@@ -18,8 +18,7 @@ const initializeTelegramSDK = async () => {
       miniApp.isMounted(); // true
     }
     miniApp.setHeaderColor('#f4eae1');
-    miniApp.bottomBarColor('#f4eae1');
-    miniAppBottomBarColor('#f4eae1');
+    miniApp.setBackgroundColor('#f4eae1');
     // Инициализация главной кнопки
     if (mainButton.mount.isAvailable()) {
       mainButton.mount();
