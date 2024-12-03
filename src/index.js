@@ -35,7 +35,7 @@ const initializeTelegramSDK = async () => {
         try {
           const score = localStorage.getItem('memory-game-score') || 0;
           const botUrl = 'https://t.me/tgAppExampleBot';
-          const messageText = `Посмотрите! У меня ${score} очков в игре!\n\nПрисоединяйтесь:`;
+          const messageText = `Посмотрите! У меня ${score} очков в игре!\n\nПрисоединяйтесь: ${botUrl}`;
           shareURL(botUrl, messageText);
           console.log('Пользователь может теперь поделиться своим счетом и пригласить в игру.');
         } catch (error) {
