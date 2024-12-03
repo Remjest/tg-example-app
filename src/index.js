@@ -35,14 +35,9 @@ const initializeTelegramSDK = async () => {
         try {
           const score = localStorage.getItem('memory-game-score') || 0;
           const botUrl = 'https://t.me/tgAppExampleBot';
-          const messageText = `Посмотрите! У меня ${score} очков в игре!\n\nИграйте и вы: ${botUrl}`;
-
-          const encodedMessage = encodeURIComponent(messageText);
-          const shareMessage = `tg://msg?text=${encodedMessage}`;
-          window.open(shareMessage, '_blank');
-
+          const messageText = `Посмотрите! У меня ${score} очков в игре!\n\nПрисоединяйтесь: ${botUrl}`;
+          shareURL(`https://t.me/share/url?text=${encodeURIComponent(messageText)}`);
           console.log('Пользователь может теперь поделиться своим счетом и пригласить в игру.');
-
         } catch (error) {
           console.error('Ошибка при открытии окна выбора чата:', error);
         }
