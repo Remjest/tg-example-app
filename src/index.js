@@ -1,15 +1,16 @@
 import React from 'react';
 import { createRoot } from 'react-dom/client';
 import App from './App';
-import { init, mockTelegramEnv, parseInitData } from '@telegram-apps/sdk';
+import { initMiniApp, initMainButton, mockTelegramEnv, parseInitData, initUtils } from '@telegram-apps/sdk';
 
 const initializeTelegramSDK = async () => {
   try {
     // Попытка инициализировать настоящее окружение Telegram
     console.log("Инициализация окружения Telegram");
-    const { miniApp, mainButton } = await init();
+    const [miniApp] = initMiniApp();
     miniApp.setHeaderColor('#fcb69f');
     // Инициализация главной кнопки
+    const [mainButton] = initMainButton();
     mainButton.setParams({
       backgroundColor: '#aa1388',
       text: 'Поделиться очками',
@@ -18,17 +19,21 @@ const initializeTelegramSDK = async () => {
     });
     mainButton.show();
 
+    const utils = initUtils();
+
     // Установка обработчика нажатия на главную кнопку
     mainButton.on('click', () => {
       try {
         // Получение текущих очков из localStorage
         const score = localStorage.getItem('memory-game-score') || 0;
-        mainButton.shareURL(`Посмотрите! У меня ${score} очков в игре!`);
+        utils.shareURL(`Посмотрите! У меня ${score} очков в игре!`);
         console.log('Окно выбора чата открыто для отправки сообщения.');
       } catch (error) {
         console.error('Ошибка при открытии окна выбора чата:', error);
       }
     });
+
+    await miniApp.ready();
   } catch (error) {
     // В случае ошибки инициализируем фейковое окружение
     console.error('Ошибка при инициализации Telegram:', error);
