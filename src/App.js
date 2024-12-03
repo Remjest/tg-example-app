@@ -139,7 +139,7 @@ const App = () => {
 
   return (
     <div className="App">
-      <h1>Memory Game</h1>
+      <h1>Hidden Kitten</h1>
       <div className="info">
         <p>Очки: {state.score}</p>
         <p>Попытки: {state.turns}/15</p>
